@@ -1,0 +1,28 @@
+.taquin {
+    width: 400px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.piece {
+    background-color: aqua;
+    width: 100px;
+    height: 100px;
+    border-radius: 10px 10px 10px 10px;
+    font-size: 3em;
+    text-align: center;
+}
+
+.piece1 {
+    order: 0;
+}
+
+.piece16 {
+    background-color: white;
+    visibility: hidden;
+}
+
+.piece15 {
+    order: 15;
+}
