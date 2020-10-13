@@ -27,5 +27,6 @@ function pieceCliquable(pieceInvisible, pieceAtester, largueurTaquin = 4) {
 }*/
 function pieceCliquable(pieceInvisible, pieceAtester, largueurTaquin = 4) {
     var cliquable = (pieceAtester == (pieceInvisible - 1) && !(pieceInvisible % 4 == 1)) || (pieceAtester == (pieceInvisible + 1) && !(pieceInvisible % 4 == 0)) || (pieceAtester == (pieceInvisible + 4)) || (pieceAtester == (pieceInvisible - 4));
+    /*Enlever la piece invisible des test*/
     return cliquable;
 }
