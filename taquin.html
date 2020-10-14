@@ -10,15 +10,19 @@
 
 <body onload="taquin()" ;>
     <div class="c1">
-        <h1>Raymond Taquin</h1>
-        <h2>Commande</h2>
-        <p> de Raymond : taquin jouable. Le taquin est une figure divisée en 16 morceaux de dimensions similaires(hauteur largeur).<br> Les 16 morceaux sont disposés sur une grille de 16 emplacements adjacents(4 colonnes, 4 rangées).<br> Le 16eme morceau
-            est invisible.<br> Si un des 15 morceaux visibles est voisin du morceau invisible, il devient cliquable. Au clic sur un morceau visible, il échange sa place avec le morceau invisible.
-        </p>
-        <h2>Comment qu'on fait</h2>
-        <p>16 div contenues par une boite flex, à la boite flex nous attribuons un comportement wrap. La mise en tableau des pièces dépend de ce comportement.</p>
-        <p>Une propriété order pour chaque pièce du taquin lui donne sa position dans le tableau.</p>
-        <section>
+        <header>
+             <h1>Raymond Taquin</h1>
+        </header>
+        <section id="presentation">
+            <h2>Commande</h2>
+            <p> de Raymond : taquin jouable. Le taquin est une figure divisée en 16 morceaux de dimensions similaires(hauteur largeur).<br> Les 16 morceaux sont disposés sur une grille de 16 emplacements adjacents(4 colonnes, 4 rangées).<br> Le 16eme morceau
+                est invisible.<br> Si un des 15 morceaux visibles est voisin du morceau invisible, il devient cliquable. Au clic sur un morceau visible, il échange sa place avec le morceau invisible.
+            </p>
+            <h2>Comment qu'on fait</h2>
+            <p>16 div contenues par une boite flex, à la boite flex nous attribuons un comportement wrap. La mise en tableau des pièces dépend de ce comportement.</p>
+            <p>Une propriété order pour chaque pièce du taquin lui donne sa position dans le tableau.</p>
+        </section>
+        <section id="scene">
             <div class="taquin">
                 <div class="piece piece1">1</div>
                 <div class="piece">2</div>
@@ -38,6 +42,7 @@
                 <div class="piece piece16">16</div>
             </div>
         </section>
+        <footer>FOOTER</footer>
     </div>
     <script type="text/javascript" src="js/taquin.js"></script>
 </body>
