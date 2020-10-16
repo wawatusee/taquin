@@ -53,15 +53,11 @@ footer{
     text-align: center;
 }
 
-.piece1 {
-    order: 0;
-}
 
-.piece16 {
-    background-color: white;
+#pieceInvisible{
+    order: 16;
     visibility: hidden;
 }
 
-.piece15 {
-    order: 15;
-}
+
+
