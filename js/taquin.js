@@ -46,3 +46,23 @@ function joue(evt) {
         console.log('Pièce cliquable: ' + stylePieceInvisible.order + " || " + sonStyle.order);
     };
 };
+let pieces = ["Piece1", "Piece2", "Piece3", "Piece4", "Piece5", "Piece6"];
+
+function randomPieces(tableauPieces) {
+    let availablePieces = Array(...tableauPieces);
+    let randomOrderPieces = [];
+        // Crée une variable contenant la longueur initiale de `availablePieces` pour éviter qu'elle ne soit réevaluée à chaque tour de boucle
+        let initialLength = availablePieces.length;
+
+    for (let i = 0; i < initialLength; i++) {
+                        // Choisi un index pour une pièce restante dans `availablePieces`
+                        let randomIndex = Math.floor(Math.random() * availablePieces.length);
+
+                        // Fait sauter une pièce à l'index précisé par `randomIndex` et renvoie un array contenant cette pièce
+                        let deletedPieceArray = availablePieces.splice(randomIndex, 1);
+
+            randomOrderPieces.push(...deletedPieceArray);
+        }
+
+    return randomOrderPieces;
+}
