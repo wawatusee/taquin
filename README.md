@@ -20,7 +20,20 @@ Si un des 15 morceaux visibles est voisin du morceau invisible, il devient cliqu
 Les 16 div sont contenues par une boite flex. La largeur de la dite boite Flex correspond à 4 fois la largeur de chaque morceau. 
 Nous attribuons un comportement wrap à cette boite.  
 La mise en tableau des pièces dépend de ce comportement.  
-Une propriété order pour chaque pièce du taquin lui donne sa position dans le tableau :  
+Une propriété order pour chaque pièce du taquin lui donne sa position dans le tableau.
+#### Structure du site, 
+simple: 
+
+- Un Header qui reprend le nom de domaine.
+- Un Nav latéral avec la galerie d'images/video cliquables.
+- Un Main centré contenat du composant "Taquin jouable".
+- Un footer reprenant les références minimum(générique, conditions générales, liens externes, réseaux sociaux potentiels).
+
+### Esthétique, 
+- Footer, header, 
+- aplats unis communs, 
+- font : sans-serif brute, sobre, blanc grand pour  h1 header et pour le footer petite taille, peu de strong, noir. 
+- Composant, fond gris clair, adoucir le biseau de chaque pièce.
 
 
 
