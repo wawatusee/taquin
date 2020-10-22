@@ -1,25 +1,23 @@
 function taquin() {
+    /*Chercher les pièces de classe "piece, les stoquer dans un tableau" */
     var lesPieces = document.getElementsByClassName("piece");
-    /*Attribuer un ordre à un élément Flex :
-    /*Trouver la piece invisible, stoquer son ordre dans une variable :*/
+    /*Trouver la piece invisible, stoquer son style dans une variable "stylePieceInvisible":*/
     pieceInvisible = document.querySelector("#pieceInvisible");
-    console.log(pieceInvisible);
     stylePieceInvisible = getComputedStyle(pieceInvisible);
     for (var i = 0; i < lesPieces.length; i++) {
         var chaquePiece = lesPieces[i];
+        //Attribuer à chacune des pièces un ordre flex qui correspond à son index dans le tableau "lesPièces", qui correspond à sa place au sein des divs "piece"
         chaquePiece.style.order = i + 1;
         var sonStyle = getComputedStyle(chaquePiece);
-
+        //Rendre ses pièces cliquables, au click elle lanceront la fonction "joue"
         chaquePiece.addEventListener("click", joue);
-        console.log(chaquePiece);
-        console.log(sonStyle.order);
     };
 };
 
 function pieceCliquable(pieceInvisible, pieceAtester, largueurTaquin = 4) {
     pieceInvisible = Number(pieceInvisible);
     pieceAtester = Number(pieceAtester);
-    //Cliquable est définit comme true quand l'ordre de la piece testéé est égale à l'ordre de la pièce invisible,-1 ou +1 ou -4 ou +4 sauf quand le reste de la division de l'orde de la piece invisible par la largeur du taquin est égal à 1 ou à 0
+    //Jouable est définit comme true quand l'ordre de la piece testéé est égale à l'ordre de la pièce invisible,-1 ou +1 ou -4 ou +4 sauf quand le reste de la division de l'orde de la piece invisible par la largeur du taquin est égal à 1 ou à 0
     var jouable = (pieceAtester == (pieceInvisible - 1) && (pieceInvisible % largueurTaquin != 1)) // Vérifie si déplaçable vers la gauche
         ||
         (pieceAtester == (pieceInvisible + 1) && (pieceInvisible % largueurTaquin != 0)) // Vérifie si déplaçable vers la droite
