@@ -15,6 +15,14 @@ function taquin() {
         console.log(sonStyle.order);
     };
 };
+/*Dans cessGame on a utilisé cette réplique :
+emplacement.style.backgroundPosition = `${pieces[figure][1]} ${couleurJouee}`;
+Ca marchait donc on va utiliser la même.
+Pour l'appliquer :
+Largeur de l'image (toujours la même)
+Hauteur de l'image largeur multipliée par ratio d'image
+
+ */
 
 function pieceCliquable(pieceInvisible, pieceAtester, largueurTaquin = 4) {
     pieceInvisible = Number(pieceInvisible);
