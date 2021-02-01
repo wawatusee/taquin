@@ -74,6 +74,9 @@ footer {
     font-size: 3em;
     text-align: center;
 }
+.pieceMasked{
+    background: url('../img/imageTest.png')64px -32px;
+}
 
 #pieceInvisible {
     visibility: hidden;
