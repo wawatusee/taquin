@@ -9,13 +9,16 @@ function taquin() {
         var chaquePiece = lesPieces[i];
         chaquePiece.style.order = i + 1;
         var sonStyle = getComputedStyle(chaquePiece);
-
+        /*Placement du fond pour chaque piece */
+        chaquePiece.style.backgroundPositionX="25%";
+        chaquePiece.style.backgroundPositionY="0%";
+        /*Fin du Placement du fond pour chaque piece */
         chaquePiece.addEventListener("click", joue);
         console.log(chaquePiece);
         console.log(sonStyle.order);
     };
 };
-/*Dans cessGame on a utilisé cette réplique :
+/*Dans chessGame on a utilisé cette réplique :
 emplacement.style.backgroundPosition = `${pieces[figure][1]} ${couleurJouee}`;
 Ca marchait donc on va utiliser la même.
 Pour l'appliquer :
