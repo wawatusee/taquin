@@ -68,9 +68,10 @@ footer {
 
 .piece {
     width: 100px;
-    height: 56px;
+    height: 100px;
+    background: url('../img/imgtaquinnumero.png');
     background-color: aqua;
-    border-radius: 10px 10px 10px 10px;
+    /*border-radius: 10px 10px 10px 10px;*/
     font-size: 3em;
     text-align: center;
 }

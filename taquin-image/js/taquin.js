@@ -6,12 +6,14 @@ function taquin() {
     console.log(pieceInvisible);
     stylePieceInvisible = getComputedStyle(pieceInvisible);
     for (var i = 0; i < lesPieces.length; i++) {
+        let largeurPiece=hauteurPiece=100;
         var chaquePiece = lesPieces[i];
         chaquePiece.style.order = i + 1;
         var sonStyle = getComputedStyle(chaquePiece);
         /*Placement du fond pour chaque piece */
-        chaquePiece.style.backgroundPositionX="25%";
-        chaquePiece.style.backgroundPositionY="0%";
+        /*ICI `${(i%4)*40;} ${couleurJouee}` */
+        chaquePiece.style.backgroundPositionX=`${-(i%4)*largeurPiece}px`;
+        chaquePiece.style.backgroundPositionY=`${-Math.floor(i/4)*largeurPiece}px`;
         /*Fin du Placement du fond pour chaque piece */
         chaquePiece.addEventListener("click", joue);
         console.log(chaquePiece);
@@ -26,6 +28,9 @@ Largeur de l'image (toujours la même)
 Hauteur de l'image largeur multipliée par ratio d'image
 
  */
+function shufflePieces(){
+    /*Ici le code de Nanard */
+}
 
 function pieceCliquable(pieceInvisible, pieceAtester, largueurTaquin = 4) {
     pieceInvisible = Number(pieceInvisible);
