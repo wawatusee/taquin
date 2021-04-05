@@ -25,16 +25,12 @@ Ca marchait donc on va utiliser la même.
 Pour l'appliquer :
 Largeur de l'image (toujours la même)
 Hauteur de l'image largeur multipliée par ratio d'image
-
  */
-function shufflePieces(piecesToShuffle){
-    /*Ici le code de Nanard */
-}
 
 function pieceCliquable(pieceInvisible, pieceAtester, largueurTaquin = 4) {
     pieceInvisible = Number(pieceInvisible);
     pieceAtester = Number(pieceAtester);
-    //Cliquable est définit comme true quand l'ordre de la piece testéé est égale à l'ordre de la pièce invisible,-1 ou +1 ou -4 ou +4 sauf quand le reste de la division de l'orde de la piece invisible par la largeur du taquin est égal à 1 ou à 0
+    //Cliquable est définit comme true quand l'ordre de la piece testée est égale à l'ordre de la pièce invisible,-1 ou +1 ou -4 ou +4 sauf quand le reste de la division de l'orde de la piece invisible par la largeur du taquin est égal à 1 ou à 0
     var jouable = (pieceAtester == (pieceInvisible - 1) && (pieceInvisible % largueurTaquin != 1)) // Vérifie si déplaçable vers la gauche
         ||
         (pieceAtester == (pieceInvisible + 1) && (pieceInvisible % largueurTaquin != 0)) // Vérifie si déplaçable vers la droite
@@ -57,6 +53,33 @@ function joue(evt) {
     } else {
         console.log(evt);
         console.log(sonStyle.order);
-        console.log('Cliquabilité: la pièce invisible est en place ' + stylePieceInvisible.order + " || Et la tienne en" + sonStyle.order);
+        console.log('Cliquabilité: la pièce invisible est en place ' + stylePieceInvisible.order + " || Et la tienne en " + sonStyle.order);
     };
 };
+let shuffleArray=[9,11,2,14,15,1,3,8,16,7,4,12,5,13,6,10];
+function shuffleTaquin(array){
+    var lesPieces = document.getElementsByClassName("piece");
+    console.log(lesPieces+"Lapin");
+    for (var i = 0; i < lesPieces.length; i++) {
+        var chaquePiece = lesPieces[i];
+        var sonStyle = getComputedStyle(chaquePiece);
+        var nouvelOrdre=array[i];
+        chaquePiece.style.order = Number(nouvelOrdre);
+        console.log(`Ordre tiré du tableau shuffleTaquin ${nouvelOrdre}`);
+        console.log(sonStyle.order);
+        console.log(chaquePiece);
+    };
+
+}
+shuffleTaquin(shuffleArray);
+function taquinAfficheOrder() {
+    var lesPieces = document.getElementsByClassName("piece");
+    stylePieceInvisible = getComputedStyle(pieceInvisible);
+    for (var i = 0; i < lesPieces.length; i++) {
+        var chaquePiece = lesPieces[i];
+        var sonStyle = getComputedStyle(chaquePiece);
+        console.log(sonStyle.order);
+    };
+
+};
+taquinAfficheOrder();
