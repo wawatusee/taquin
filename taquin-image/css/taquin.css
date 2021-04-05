@@ -75,9 +75,6 @@ footer {
     font-size: 3em;
     text-align: center;
 }
-.pieceMasked{
-    background: url('../img/imgtaquinnumero.png');
-}
 
 #pieceInvisible {
     visibility: hidden;

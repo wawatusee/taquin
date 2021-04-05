@@ -1,23 +1,22 @@
 function taquin() {
+    /*Sélection de toutes les div identifiées pièces, dans un tableau "lesPieces", on range leurs réfèrences*/
     var lesPieces = document.getElementsByClassName("piece");
-    /*Attribuer un ordre à un élément Flex :
-    /*Trouver la piece invisible, stoquer son ordre dans une variable :*/
+    /*Trouver la piece invisible, */
     pieceInvisible = document.querySelector("#pieceInvisible");
-    console.log(pieceInvisible);
+    /*stoquer son style dans une variable :*/
     stylePieceInvisible = getComputedStyle(pieceInvisible);
+/*Boucle sur les  */
     for (var i = 0; i < lesPieces.length; i++) {
         let largeurPiece=hauteurPiece=100;
         var chaquePiece = lesPieces[i];
-        chaquePiece.style.order = i + 1;
         var sonStyle = getComputedStyle(chaquePiece);
-        /*Placement du fond pour chaque piece */
-        /*ICI `${(i%4)*40;} ${couleurJouee}` */
+        chaquePiece.style.order = i+1;
+        /*Placement de l'image de fond pour chaque piece */
         chaquePiece.style.backgroundPositionX=`${-(i%4)*largeurPiece}px`;
         chaquePiece.style.backgroundPositionY=`${-Math.floor(i/4)*largeurPiece}px`;
         /*Fin du Placement du fond pour chaque piece */
+        /*Mise en place des écouteurs sur chaque pièce */
         chaquePiece.addEventListener("click", joue);
-        console.log(chaquePiece);
-        console.log(sonStyle.order);
     };
 };
 /*Dans chessGame on a utilisé cette réplique :
@@ -28,7 +27,7 @@ Largeur de l'image (toujours la même)
 Hauteur de l'image largeur multipliée par ratio d'image
 
  */
-function shufflePieces(){
+function shufflePieces(piecesToShuffle){
     /*Ici le code de Nanard */
 }
 
