@@ -13,30 +13,6 @@
         <header>
             <h1>Raymond Taquin</h1>
         </header>
-        <section id="presentation">
-            <h2>Commande</h2>
-            <p> de Raymond : taquin jouable. Le taquin est une figure divisée en 16 morceaux de dimensions similaires(hauteur largeur).<br> Les 16 morceaux sont disposés sur une grille de 16 emplacements adjacents(4 colonnes, 4 rangées).<br> Le 16eme morceau
-                est invisible.<br> Si un des 15 morceaux visibles est voisin du morceau invisible, il devient cliquable. Au clic sur un morceau visible, il échange sa place avec le morceau invisible.
-            </p>
-        </section>
-        <section class="how">
-            <h2>Comment qu'on fait</h2>
-            <section class="explain">
-                <article>
-                    <h3>Mise en place</h3>
-                    <p>16 div contenues par une boite flex, à la boite flex nous attribuons un comportement wrap. La mise en tableau des pièces dépend de ce comportement.</p>
-                    <p>Nous parsons toutes les pièces avec une boucle.</p>
-                    <p>Nous profitons de cette boucle pour attribuer un ordre à chacune de ces pièce</p>
-                    <p>Nous en profitons pour les rendre cliquables</p>
-                </article>
-                <article>
-                    <h3>Préparation à l'action</h3>
-                    <p>Au click sur n'importe quelle pièce :</p>
-                    <p>La pièce cliquée vérifie si elle est dans une bonne situation par rapport au trou pour prendre sa place</p>
-                    <p>Si elle est bien placée la pièce cliquée échange sa place avec le trou(pièce invisible).</p>
-                </article>
-            </section>
-        </section>
         <section id="scene">
             <div class="taquin">
                 <div class="piece"></div>
@@ -58,7 +34,12 @@
             </div>
         </section>
 
-        <footer>FOOTER</footer>
+        <footer>
+            <div>FOOTER</div>
+                <section id="planDeSite">
+                <div><a href="ReadMe.html" target="_self" rel="noopener noreferrer">ReadMe</a></div>
+            </section>
+        </footer>
     </div>
     <script type="text/javascript" src="js/taquin.js"></script>
 </body>
