@@ -3,15 +3,14 @@ function taquin() {
     /*Attribuer un ordre à un élément Flex :
     /*Trouver la piece invisible, stoquer son ordre dans une variable :*/
     pieceInvisible = document.querySelector("#pieceInvisible");
-    console.log(pieceInvisible);
     stylePieceInvisible = getComputedStyle(pieceInvisible);
     for (var i = 0; i < lesPieces.length; i++) {
+        console.log("Dans la boucle taquin"+" i est égal à"+ i+chaquePiece);
         var chaquePiece = lesPieces[i];
         chaquePiece.style.order = i + 1;
         var sonStyle = getComputedStyle(chaquePiece);
-
         chaquePiece.addEventListener("click", joue);
-        console.log(chaquePiece);
+        
         console.log(sonStyle.order);
     };
 };
@@ -41,7 +40,6 @@ function joue(evt) {
         console.log('La pièce invisible qui est en position ' + stylePieceInvisible.order + ' prend la position de la piece cliquée ' + sonStyle.order);
     } else {
         console.log(evt);
-
         console.log(sonStyle.order);
         console.log('Pièce cliquable: ' + stylePieceInvisible.order + " || " + sonStyle.order);
     };
