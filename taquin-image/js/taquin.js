@@ -5,16 +5,20 @@ function taquin() {
     pieceInvisible = document.querySelector("#pieceInvisible");
     /*stoquer son style dans une variable :*/
     stylePieceInvisible = getComputedStyle(pieceInvisible);
-/*Boucle sur les  */
+    /*Tableau de positions autres */
+    var shuffleArray=[9,11,2,14,15,1,3,8,16,7,4,12,5,13,6,10];
+    /*Boucle sur les  */
     for (var i = 0; i < lesPieces.length; i++) {
         let largeurPiece=hauteurPiece=100;
         var chaquePiece = lesPieces[i];
         var sonStyle = getComputedStyle(chaquePiece);
-        chaquePiece.style.order = i+1;
+        
         /*Placement de l'image de fond pour chaque piece */
         chaquePiece.style.backgroundPositionX=`${-(i%4)*largeurPiece}px`;
         chaquePiece.style.backgroundPositionY=`${-Math.floor(i/4)*largeurPiece}px`;
         /*Fin du Placement du fond pour chaque piece */
+        /*chaquePiece.style.order = i+1;*/
+        chaquePiece.style.order =shuffleArray[i];
         /*Mise en place des écouteurs sur chaque pièce */
         chaquePiece.addEventListener("click", joue);
     };
@@ -56,7 +60,7 @@ function joue(evt) {
         console.log('Cliquabilité: la pièce invisible est en place ' + stylePieceInvisible.order + " || Et la tienne en " + sonStyle.order);
     };
 };
-let shuffleArray=[9,11,2,14,15,1,3,8,16,7,4,12,5,13,6,10];
+
 function shuffleTaquin(array){
     var lesPieces = document.getElementsByClassName("piece");
     console.log(lesPieces+"Lapin");
@@ -71,7 +75,7 @@ function shuffleTaquin(array){
     };
 
 }
-shuffleTaquin(shuffleArray);
+//shuffleTaquin(shuffleArray);
 function taquinAfficheOrder() {
     var lesPieces = document.getElementsByClassName("piece");
     stylePieceInvisible = getComputedStyle(pieceInvisible);
