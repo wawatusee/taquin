@@ -1,19 +1,35 @@
 function taquin() {
+    /*Sélection de toutes les div identifiées pièces, dans un tableau "lesPieces", on range leurs réfèrences*/
     var lesPieces = document.getElementsByClassName("piece");
-    /*Attribuer un ordre à un élément Flex :
-    /*Trouver la piece invisible, stoquer son ordre dans une variable :*/
+    /*Trouver la piece invisible, */
     pieceInvisible = document.querySelector("#pieceInvisible");
+    /*stoquer son style dans une variable :*/
     stylePieceInvisible = getComputedStyle(pieceInvisible);
+/*Boucle sur les  */
     for (var i = 0; i < lesPieces.length; i++) {
-        console.log("Dans la boucle taquin"+" i est égal à"+ i+chaquePiece);
+        let largeurPiece=hauteurPiece=100;
         var chaquePiece = lesPieces[i];
-        chaquePiece.style.order = i + 1;
         var sonStyle = getComputedStyle(chaquePiece);
+        chaquePiece.style.order = i+1;
+        /*Placement de l'image de fond pour chaque piece */
+        chaquePiece.style.backgroundPositionX=`${-(i%4)*largeurPiece}px`;
+        chaquePiece.style.backgroundPositionY=`${-Math.floor(i/4)*largeurPiece}px`;
+        /*Fin du Placement du fond pour chaque piece */
+        /*Mise en place des écouteurs sur chaque pièce */
         chaquePiece.addEventListener("click", joue);
-        
-        console.log(sonStyle.order);
     };
 };
+/*Dans chessGame on a utilisé cette réplique :
+emplacement.style.backgroundPosition = `${pieces[figure][1]} ${couleurJouee}`;
+Ca marchait donc on va utiliser la même.
+Pour l'appliquer :
+Largeur de l'image (toujours la même)
+Hauteur de l'image largeur multipliée par ratio d'image
+
+ */
+function shufflePieces(piecesToShuffle){
+    /*Ici le code de Nanard */
+}
 
 function pieceCliquable(pieceInvisible, pieceAtester, largueurTaquin = 4) {
     pieceInvisible = Number(pieceInvisible);
@@ -41,26 +57,6 @@ function joue(evt) {
     } else {
         console.log(evt);
         console.log(sonStyle.order);
-        console.log('Pièce cliquable: ' + stylePieceInvisible.order + " || " + sonStyle.order);
+        console.log('Cliquabilité: la pièce invisible est en place ' + stylePieceInvisible.order + " || Et la tienne en" + sonStyle.order);
     };
 };
-let pieces = ["Piece1", "Piece2", "Piece3", "Piece4", "Piece5", "Piece6"];
-
-function randomPieces(tableauPieces) {
-    let availablePieces = Array(...tableauPieces);
-    let randomOrderPieces = [];
-        // Crée une variable contenant la longueur initiale de `availablePieces` pour éviter qu'elle ne soit réevaluée à chaque tour de boucle
-        let initialLength = availablePieces.length;
-
-    for (let i = 0; i < initialLength; i++) {
-                        // Choisi un index pour une pièce restante dans `availablePieces`
-                        let randomIndex = Math.floor(Math.random() * availablePieces.length);
-
-                        // Fait sauter une pièce à l'index précisé par `randomIndex` et renvoie un array contenant cette pièce
-                        let deletedPieceArray = availablePieces.splice(randomIndex, 1);
-
-            randomOrderPieces.push(...deletedPieceArray);
-        }
-
-    return randomOrderPieces;
-}
