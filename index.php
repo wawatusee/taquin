@@ -1,7 +1,7 @@
 <?php 
+//Import du fichier json source
 $jsonImageTaquin=json_decode(file_get_contents("js/image-taquin.json"));
-//print_r($jsonImageTaquin);
-//var_dump( $jsonImageTaquin->image_taquin);
+//Récupération du nom de l'image source
 $nomImage=$jsonImageTaquin->image_taquin;
 ?>
 <!DOCTYPE html>
@@ -40,7 +40,7 @@ $nomImage=$jsonImageTaquin->image_taquin;
         </section>
 
         <footer>
-            <div>FOOTER</div>
+            <div>Image du jour</div>
                 <section id="planDeSite">
                 <?php echo $nomImage ?>
             </section>

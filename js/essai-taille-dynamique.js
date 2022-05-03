@@ -1,8 +1,5 @@
 function taquin() {
     var nomImageTaquin=getNomImage();
-    //TODO remplacer le nom en dur par la variable dans le setProperty
-    //console.log('url("../img/'+´${nomImageTaquin´+'")');
-    console.log('url("../img/'+nomImageTaquin+'")');
     document.documentElement.style.setProperty('--image-taquin','url("../img/'+nomImageTaquin+'")');
     /*Sélection de toutes les div identifiées pièces, dans un tableau "lesPieces", on range leurs réfèrences*/
     var lesPieces = document.getElementsByClassName("piece");
@@ -32,21 +29,6 @@ function getNomImage(){
     var nomImageTaquin=jsonImageTaquin.textContent;
     return nomImageTaquin;
 }
-
-function pieceCliquable(pieceInvisible, pieceAtester, largueurTaquin = 4) {
-    pieceInvisible = Number(pieceInvisible);
-    pieceAtester = Number(pieceAtester);
-    //Cliquable est définit comme true quand l'ordre de la piece testée est égale à l'ordre de la pièce invisible,-1 ou +1 ou -4 ou +4 sauf quand le reste de la division de l'orde de la piece invisible par la largeur du taquin est égal à 1 ou à 0
-    var jouable = (pieceAtester == (pieceInvisible - 1) && (pieceInvisible % largueurTaquin != 1)) // Vérifie si déplaçable vers la gauche
-        ||
-        (pieceAtester == (pieceInvisible + 1) && (pieceInvisible % largueurTaquin != 0)) // Vérifie si déplaçable vers la droite
-        ||
-        (pieceAtester == (pieceInvisible + largueurTaquin)) // Vérifie si déplaçable vers le bas
-        ||
-        (pieceAtester == (pieceInvisible - largueurTaquin)); // Vérifie si déplaçable vers le haut
-    return jouable;
-}
-
 function joue(evt) {
     //var nouvelleOrdrePieceCliquee=ordrePieceInvisible;
     var sonStyle = getComputedStyle(evt.target);
@@ -61,7 +43,23 @@ function joue(evt) {
         console.log(sonStyle.order);
         console.log('Cliquabilité: la pièce invisible est en place ' + stylePieceInvisible.order + " || Et la tienne en " + sonStyle.order);
     };
+    //taquinAfficheOrder();
 };
+function pieceCliquable(pieceInvisible, pieceAtester, largueurTaquin = 4) {
+    pieceInvisible = Number(pieceInvisible);
+    pieceAtester = Number(pieceAtester);
+    //Cliquable est définit comme true quand l'ordre de la piece testée est égale à l'ordre de la pièce invisible,-1 ou +1 ou -4 ou +4 sauf quand le reste de la division de l'orde de la piece invisible par la largeur du taquin est égal à 1 ou à 0
+    var jouable = (pieceAtester == (pieceInvisible - 1) && (pieceInvisible % largueurTaquin != 1)) // Vérifie si déplaçable vers la gauche
+        ||
+        (pieceAtester == (pieceInvisible + 1) && (pieceInvisible % largueurTaquin != 0)) // Vérifie si déplaçable vers la droite
+        ||
+        (pieceAtester == (pieceInvisible + largueurTaquin)) // Vérifie si déplaçable vers le bas
+        ||
+        (pieceAtester == (pieceInvisible - largueurTaquin)); // Vérifie si déplaçable vers le haut
+    return jouable;
+}
+
+
 function taquinAfficheOrder() {
     var lesPieces = document.getElementsByClassName("piece");
     stylePieceInvisible = getComputedStyle(pieceInvisible);
@@ -72,8 +70,3 @@ function taquinAfficheOrder() {
     };
 
 };
-taquinAfficheOrder();
-//document.documentElement.style
-//.setProperty('--image-taquin','url("../img/imgtaquinnumero.png")');
-//getComputedStyle(document.documentElement);
-//.getPropertyValue('--image-taquin');
