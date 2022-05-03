@@ -1,8 +1,9 @@
 function taquin() {
     var nomImageTaquin=getNomImage();
     //TODO remplacer le nom en dur par la variable dans le setProperty
-    //document.documentElement.style.setProperty('--image-taquin','url("../img/nomImageTaquin")');
-    document.documentElement.style.setProperty('--image-taquin','url("../img/imgtaquinnumero.png")');
+    //console.log('url("../img/'+´${nomImageTaquin´+'")');
+    console.log('url("../img/'+nomImageTaquin+'")');
+    document.documentElement.style.setProperty('--image-taquin','url("../img/'+nomImageTaquin+'")');
     /*Sélection de toutes les div identifiées pièces, dans un tableau "lesPieces", on range leurs réfèrences*/
     var lesPieces = document.getElementsByClassName("piece");
     /*Trouver la piece invisible, */
