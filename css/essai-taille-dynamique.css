@@ -1,0 +1,85 @@
+/*TAQUIN*/
+
+:root{
+    --image-taquin:url('../img/imgtaquinnumero.png');
+}
+.taquin {
+    width: 400px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+.piece {
+    width: 100px;
+    height: 100px;
+    background: var(--image-taquin);
+    background-color: aqua;
+    /*border-radius: 10px 10px 10px 10px;*/
+    font-size: 3em;
+    text-align: center;
+}
+
+#pieceInvisible {
+    visibility: hidden;
+}
+/*************************************/
+/*STRUCTURE*/
+
+body {
+    font-family: sans-serif;
+}
+
+.c1 {
+    display: grid;
+    grid-template-columns: 25% 50% auto;
+    grid-template-rows: auto auto auto auto auto;
+    grid-gap: 15px;
+}
+
+header {
+    grid-row: 1/2;
+    grid-column: 1/-1;
+}
+
+#presentation {
+    grid-row: 2/3;
+    grid-column: 2/4;
+}
+
+.how {
+    grid-row: 3/4;
+    grid-column: 1/4;
+}
+
+.explain {}
+
+#scene {
+    grid-row: 4/5;
+    grid-column: 2/4;
+}
+
+footer {
+    grid-row: 5/6;
+    grid-column: 1/4;
+}
+
+
+/*HABILLAGE*/
+
+body {
+    font-family: sans-serif;
+}
+
+header,
+footer {
+    background-color: dimgrey;
+    text-align: center;
+    color: floralwhite;
+}
+
+footer {
+    text-align: center;
+}
+
+
