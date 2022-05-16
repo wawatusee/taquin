@@ -38,7 +38,6 @@ $nomImage=$jsonImageTaquin->image_taquin;
                 <div id="pieceInvisible" class="piece"></div>
             </div>
         </section>
-
         <footer>
             <div>Image du jour</div>
                 <section id="planDeSite">
@@ -46,7 +45,6 @@ $nomImage=$jsonImageTaquin->image_taquin;
             </section>
         </footer>
     </div>
-    <script type="text/javascript" src="js/essai-taille-dynamique.js"></script>
+    <script type="text/javascript" src="js/taquin.js"></script>
 </body>
-
 </html>
