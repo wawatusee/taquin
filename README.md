@@ -14,9 +14,19 @@ Le 16eme morceau est invisible.
 Si un des 15 morceaux visibles est voisin du morceau invisible, il devient cliquable. Au clic sur un morceau visible, il échange sa place avec le morceau invisible.  
 
 ## Comment qu'on fait
+PHP, html, JS, CSS
+### PHP
+Pour récupérer le fichiers de config qui contient le nom de répertoire des images
+Pour produire le html :
+- une balise style ou on place une variable CSS qui sera utilisée pour donner le nom d'image de background à chaque case.
+- le titre
+- le contenant
+- les cases
 
-### Structure  
 
+## A quoi ça ressemble
+
+### Structure  du taquin
 Les 16 div sont contenues par une boite flex. La largeur de la dite boite Flex correspond à 4 fois la largeur de chaque morceau. 
 Nous attribuons un comportement wrap à cette boite: La mise en tableau des pièces dépend de ce comportement.  
 Une propriété order pour chaque pièce du taquin lui donne sa position dans le tableau.
@@ -25,7 +35,6 @@ Une autre version de ce Taquin reproduira le même fonctionnement avec une vidé
 Le Javascript est employé pour gérer le CSS existant, permettre l'écoute des actions du joueur et y réagir.
 #### Structure du site, 
 simple: 
-
 - Un Header qui reprend le nom de domaine.
 - Un Nav latéral avec la galerie d'images/video cliquables.
 - 3 pages composeront le site
