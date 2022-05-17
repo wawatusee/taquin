@@ -1,19 +1,23 @@
 <?php 
+//Rapatrier les infos nécessaires, ex: $dirImages
+require_once "config.php";
 //Import du fichier json source
 $jsonImageTaquin=json_decode(file_get_contents("js/image-taquin.json"));
 //Récupération du nom de l'image source
 $nomImage=$jsonImageTaquin->image_taquin;
+$urlImage=$dirImages.$nomImage;
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/essai-taille-dynamique.css">
+    <!--<script type="text/javascript" src="js/init.js"></script>-->
+    <link rel="stylesheet" href="css/taquin.css">
     <title>Taquin</title>
+    <style>:root{--image-taquin:url('<?php echo $urlImage ?>');}</style>
 </head>
-
-<body onload="taquin()" ;>
+<body onload="taquin()">
     <div class="c1">
         <header>
             <h1>Raymond Taquin</h1>
@@ -39,9 +43,9 @@ $nomImage=$jsonImageTaquin->image_taquin;
             </div>
         </section>
         <footer>
-            <div>Image du jour</div>
-                <section id="planDeSite">
-                <?php echo $nomImage ?>
+            <div>Plan de site</div>
+            <section id="planDeSite">
+                <nav><!--MENU--></nav>
             </section>
         </footer>
     </div>

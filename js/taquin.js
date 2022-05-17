@@ -1,6 +1,6 @@
 function taquin() {
-    var nomImageTaquin=getNomImage();
-    document.documentElement.style.setProperty('--image-taquin','url("../img/'+nomImageTaquin+'")');
+    //var nomImageTaquin=getNomImage();
+   // document.documentElement.style.setProperty('--image-taquin','url("../img/'+nomImageTaquin+'")');
     /*Sélection de toutes les div identifiées pièces, dans un tableau "lesPieces", on range leurs réfèrences*/
     var lesPieces = document.getElementsByClassName("piece");
     /*Trouver la piece invisible, */
@@ -43,7 +43,7 @@ function joue(evt) {
         console.log(sonStyle.order);
         console.log('Cliquabilité: la pièce invisible est en place ' + stylePieceInvisible.order + " || Et la tienne en " + sonStyle.order);
     };
-    //taquinAfficheOrder();
+    taquinAfficheOrder();
 };
 function pieceCliquable(pieceInvisible, pieceAtester, largueurTaquin = 4) {
     pieceInvisible = Number(pieceInvisible);
@@ -62,11 +62,14 @@ function pieceCliquable(pieceInvisible, pieceAtester, largueurTaquin = 4) {
 
 function taquinAfficheOrder() {
     var lesPieces = document.getElementsByClassName("piece");
+    let orderArray=[];
     stylePieceInvisible = getComputedStyle(pieceInvisible);
     for (var i = 0; i < lesPieces.length; i++) {
         var chaquePiece = lesPieces[i];
         var sonStyle = getComputedStyle(chaquePiece);
+        orderArray.push(sonStyle);
+        console.log('piece'+i+' :')
         console.log(sonStyle.order);
     };
-
+    //console.log(orderArray);
 };
