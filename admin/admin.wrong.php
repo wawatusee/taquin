@@ -10,7 +10,7 @@ if(isset($_GET['logout'])){
 
 require "../config.php";
 $dos = "../".$dirImages;
-$dir = opendir($dos."/min/");
+$dir = opendir($dos);
 $largeurMiniature = 200;
 $largeurImageTaquin = 400;
 
@@ -288,7 +288,6 @@ if(isset($_POST['defaultTaquin'])){
         <div class="header-left">
             <a href="../index.php" class="back-link">← Taquin</a>
             <h1>Administration</h1>
-            <a href="admin-gif.php" class="back-link">+ Créer un GIF</a>
         </div>
         <a href="?logout" class="logout-link">Déconnexion</a>
     </header>
@@ -327,7 +326,7 @@ if(isset($_POST['defaultTaquin'])){
         ?>
             <div class="thumb <?php echo $isActive ? 'active' : ''; ?>">
                 <a class="zoom-link" href="<?php echo $dos.$file; ?>" rel="zoombox[galerie]">
-                    <img src="<?php echo $dos.'min/'.$file; ?>" alt="<?php echo $imageName; ?>"/>
+                    <img src="<?php echo $dos.'min/'.$imageName.'.jpg'; ?>" alt="<?php echo $imageName; ?>"/>
                 </a>
                 <div class="thumb-info"><?php echo $imageName; ?></div>
                 <div class="thumb-actions">
