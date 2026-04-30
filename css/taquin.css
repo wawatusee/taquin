@@ -5,7 +5,7 @@
 }
 
 .taquin {
-    width: min(90vw, 90vh, 500px);
+    width: min(90vmin, 500px);
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
