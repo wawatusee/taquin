@@ -1,75 +1,158 @@
+document.body.onload = setBoard;
+let nbrPiecesPerLine = 0
+let pieceInvisible = null
+let stylePieceInvisible = null
+let displayedNumero = false
+
+function setBoard(){
+    nbrPiecesPerLine = Number(getComputedStyle(document.documentElement).getPropertyValue('--nbrPiecesPerLine'));
+    let numberOfPieces = nbrPiecesPerLine * nbrPiecesPerLine
+    let scene = document.getElementById("scene")
+    let board = document.createElement("div")
+    board.classList.add("taquin")
+    for (let i = 1; i < numberOfPieces + 1; i++){
+        let piece = document.createElement("div");
+        piece.classList.add("piece")
+        board.appendChild(piece)
+    }
+    scene.appendChild(board)
+    pieceInvisible = board.lastChild
+    pieceInvisible.id = "pieceInvisible"
+    taquin();
+}
+
 function taquin() {
-    //var nomImageTaquin=getNomImage();
-   // document.documentElement.style.setProperty('--image-taquin','url("../img/'+nomImageTaquin+'")');
-    /*Sélection de toutes les div identifiées pièces, dans un tableau "lesPieces", on range leurs réfèrences*/
-    var lesPieces = document.getElementsByClassName("piece");
-    /*Trouver la piece invisible, */
+    let lesPieces = document.getElementsByClassName("piece");
     pieceInvisible = document.querySelector("#pieceInvisible");
-    /*stoquer son style dans une variable :*/
     stylePieceInvisible = getComputedStyle(pieceInvisible);
-    /*Tableau de positions autres */
-    var shuffleArray=[9,11,2,14,15,1,3,8,16,7,4,12,5,13,6,10];
-    /*Boucle sur les  */
-    for (var i = 0; i < lesPieces.length; i++) {
-        let largeurPiece=hauteurPiece=100;
-        var chaquePiece = lesPieces[i];
-        var sonStyle = getComputedStyle(chaquePiece);
-        /*Placement de l'image de fond pour chaque piece */
-        chaquePiece.style.backgroundPositionX=`${-(i%4)*largeurPiece}px`;
-        chaquePiece.style.backgroundPositionY=`${-Math.floor(i/4)*largeurPiece}px`;
-        /*Fin du Placement du fond pour chaque piece */
-        /*chaquePiece.style.order = i+1;*/
-        chaquePiece.style.order =shuffleArray[i];
-        /*Mise en place des écouteurs sur chaque pièce */
+    let shuffleArray = getShuffleArray();
+
+    for (let i = 0; i < lesPieces.length; i++) {
+        let chaquePiece = lesPieces[i];
+        let col = i % nbrPiecesPerLine;
+        let row = Math.floor(i / nbrPiecesPerLine);
+
+        if (nbrPiecesPerLine > 1) {
+            chaquePiece.style.backgroundPositionX = `${(col / (nbrPiecesPerLine - 1)) * 100}%`;
+            chaquePiece.style.backgroundPositionY = `${(row / (nbrPiecesPerLine - 1)) * 100}%`;
+        } else {
+            chaquePiece.style.backgroundPositionX = '0%';
+            chaquePiece.style.backgroundPositionY = '0%';
+        }
+
+        chaquePiece.style.order = shuffleArray[i];
         chaquePiece.addEventListener("click", joue);
     };
 };
-function getNomImage(){
-    var jsonImageTaquin = document.getElementById("planDeSite");
-    var nomImageTaquin=jsonImageTaquin.textContent;
-    return nomImageTaquin;
+
+function getShuffleArray() {
+    let n = nbrPiecesPerLine * nbrPiecesPerLine;
+    let arr = Array.from({length: n}, (_, i) => i + 1);
+
+    // Mélange Fisher-Yates
+    for (let i = n - 1; i > 0; i--) {
+        let j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+
+    // Correction de parité si nécessaire
+    if (!isSolvable(arr)) {
+        [arr[0], arr[1]] = [arr[1], arr[0]];
+    }
+
+    return arr;
 }
+
+function isSolvable(arr) {
+    let inversions = 0;
+    for (let i = 0; i < arr.length - 1; i++) {
+        for (let j = i + 1; j < arr.length; j++) {
+            if (arr[i] > arr[j]) inversions++;
+        }
+    }
+    let blankPos = arr.indexOf(nbrPiecesPerLine * nbrPiecesPerLine);
+    let blankRow = Math.floor(blankPos / nbrPiecesPerLine);
+    let blankRowFromBottom = nbrPiecesPerLine - blankRow;
+
+    if (nbrPiecesPerLine % 2 === 1) {
+        return inversions % 2 === 0;
+    } else {
+        return (inversions + blankRowFromBottom) % 2 === 0;
+    }
+}
+
 function joue(evt) {
-    //var nouvelleOrdrePieceCliquee=ordrePieceInvisible;
-    var sonStyle = getComputedStyle(evt.target);
+    let sonStyle = getComputedStyle(evt.target);
     if (pieceCliquable(stylePieceInvisible.order, sonStyle.order)) {
-        // Echange l'order entre la pièce invisible et la pièce cliquée
         let temporaryOrder = pieceInvisible.style.order;
         pieceInvisible.style.order = sonStyle.order;
         evt.target.style.order = temporaryOrder;
-        console.log('La pièce invisible qui est en position ' + stylePieceInvisible.order + ' prend la position de la piece cliquée ' + sonStyle.order);
-    } else {
-        console.log(evt);
-        console.log(sonStyle.order);
-        console.log('Cliquabilité: la pièce invisible est en place ' + stylePieceInvisible.order + " || Et la tienne en " + sonStyle.order);
+    }
+    if (testIssue()) {
+        endOfGame();
     };
-    taquinAfficheOrder();
 };
-function pieceCliquable(pieceInvisible, pieceAtester, largueurTaquin = 4) {
+
+function pieceCliquable(pieceInvisible, pieceAtester, largueurTaquin = nbrPiecesPerLine) {
     pieceInvisible = Number(pieceInvisible);
     pieceAtester = Number(pieceAtester);
-    //Cliquable est définit comme true quand l'ordre de la piece testée est égale à l'ordre de la pièce invisible,-1 ou +1 ou -4 ou +4 sauf quand le reste de la division de l'orde de la piece invisible par la largeur du taquin est égal à 1 ou à 0
-    var jouable = (pieceAtester == (pieceInvisible - 1) && (pieceInvisible % largueurTaquin != 1)) // Vérifie si déplaçable vers la gauche
-        ||
-        (pieceAtester == (pieceInvisible + 1) && (pieceInvisible % largueurTaquin != 0)) // Vérifie si déplaçable vers la droite
-        ||
-        (pieceAtester == (pieceInvisible + largueurTaquin)) // Vérifie si déplaçable vers le bas
-        ||
-        (pieceAtester == (pieceInvisible - largueurTaquin)); // Vérifie si déplaçable vers le haut
+    let jouable = (pieceAtester == (pieceInvisible - 1) && (pieceInvisible % largueurTaquin != 1))
+        || (pieceAtester == (pieceInvisible + 1) && (pieceInvisible % largueurTaquin != 0))
+        || (pieceAtester == (pieceInvisible + largueurTaquin))
+        || (pieceAtester == (pieceInvisible - largueurTaquin));
     return jouable;
 }
 
-
-function taquinAfficheOrder() {
-    var lesPieces = document.getElementsByClassName("piece");
-    let orderArray=[];
+function aGetPiecesOrder() {
+    let lesPieces = document.getElementsByClassName("piece");
+    let orderArray = [];
     stylePieceInvisible = getComputedStyle(pieceInvisible);
-    for (var i = 0; i < lesPieces.length; i++) {
-        var chaquePiece = lesPieces[i];
-        var sonStyle = getComputedStyle(chaquePiece);
-        orderArray.push(sonStyle);
-        console.log('piece'+i+' :')
-        console.log(sonStyle.order);
+    for (let i = 0; i < lesPieces.length; i++) {
+        let chaquePiece = lesPieces[i];
+        let sonStyle = getComputedStyle(chaquePiece);
+        orderArray.push(Number(sonStyle.order));
     };
-    //console.log(orderArray);
+    return orderArray
 };
+
+function testIssue(){
+    let nbrPiecesOrdonnees = 0;
+    let lesPieces = document.getElementsByClassName("piece");
+    let nbrPieces = lesPieces.length;
+    for (let i = 0; i < nbrPieces; i++){
+        let chaquePiece = lesPieces[i];
+        let sonStyle = getComputedStyle(chaquePiece);
+        if (sonStyle.order == i + 1){
+            nbrPiecesOrdonnees += 1;
+        }
+        if (nbrPiecesOrdonnees > (nbrPiecesPerLine * nbrPiecesPerLine) - 2){
+            return true;
+        }
+    }
+}
+
+function displayPiecesNumber(){
+    let pieces = document.getElementsByClassName("piece");
+    if (displayedNumero === false){
+        for (let i = 0; i < pieces.length; i++){
+            let piece = pieces[i]
+            piece.textContent = i + 1;
+        }
+        displayedNumero = true;
+    } else {
+        for (let i = 0; i < pieces.length; i++){
+            let piece = pieces[i]
+            piece.textContent = " ";
+        }
+        displayedNumero = false;
+    }
+}
+
+function endOfGame(){
+    let lesPieces = document.getElementsByClassName("piece");
+    document.getElementById("pieceInvisible").style.visibility = "visible";
+    for (let i = 0; i < lesPieces.length; i++) {
+        let chaquePiece = lesPieces[i];
+        chaquePiece.removeEventListener("click", joue);
+    };
+}

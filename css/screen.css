@@ -1,0 +1,65 @@
+/*HEADER*/
+body{
+    background-color: grey;
+    font-family: Tahoma, Verdana, Geneva, sans-serif;
+}
+/*Titres*/
+h1{
+    font-size: 1.8571em; /* equiv 26px */
+    text-align: center;
+    background-color: black;
+}
+h2{
+    font-size: 1.7143em; /* equiv 24px */
+    background-color: rgb(87, 82, 78);
+    text-align: left;
+}
+ h1,h2{
+    font-weight: normal;
+    margin-top:0;
+    margin-bottom: 0;
+    color: bisque;
+	font-weight: normal;
+}
+h1>a{
+ font-size:medium;
+}
+h1>a,header>a{
+    color: pink;
+}
+/*Admin MAIN*/
+
+.addFile, .submit{
+    padding:5px;
+    background-color: pink;
+    color: black;
+    border: 0.5px;
+    border-radius: 5px;
+    padding: 5px;
+    box-shadow: none;
+}
+
+.gallery{
+max-width: 98%;
+display:flex;
+flex-direction: row;
+align-items:center;
+flex-wrap: wrap;
+}
+.min{
+    background-color: white;
+    max-width: fit-content;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+.titleFigcaption{
+    max-width: 200px;
+    background-color:rgb(87, 82, 78);
+    color: white;
+}
+.actionButtons{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}

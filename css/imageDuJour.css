@@ -1,0 +1,16 @@
+body{
+    max-width: 98vw;
+    max-height: 98vh;
+    font-family: sans-serif;
+    max-width: 98vw;
+    background-color:rgb(211,211,211);
+}
+h1{
+    text-align: center;
+    font-size: 1.6em;
+    color:rgb(190, 119, 119);
+}
+.imageDuJour{
+    display: grid;
+    justify-content: space-around;
+}
