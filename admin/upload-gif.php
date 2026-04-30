@@ -51,8 +51,8 @@ if(!$dimensions){
 $ratio = $dimensions[0] / $dimensions[1];
 $hauteurMiniature = $largeurMiniature / $ratio;
 
-// Miniature fixe (première frame) pour la galerie admin
-Img::creerMin($filePath, $dos."min", $fileName, $largeurMiniature, $hauteurMiniature);
+// Miniature GIF (première frame, extension .gif préservée)
+Img::creerMinGif($filePath, $dos."min", $fileName, $largeurMiniature, $hauteurMiniature);
 
 // Le GIF animé est conservé tel quel dans images/ — pas de repassage par imgClass
 
