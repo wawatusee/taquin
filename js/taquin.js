@@ -1,8 +1,9 @@
-document.body.onload = setBoard;
 let nbrPiecesPerLine = 0
 let pieceInvisible = null
 let stylePieceInvisible = null
 let displayedNumero = false
+
+document.body.onload = setBoard
 
 function setBoard(){
     nbrPiecesPerLine = Number(getComputedStyle(document.documentElement).getPropertyValue('--nbrPiecesPerLine'));
@@ -155,4 +156,53 @@ function endOfGame(){
         let chaquePiece = lesPieces[i];
         chaquePiece.removeEventListener("click", joue);
     };
+}
+
+// MODE AUTO
+let autoInterval = null;
+let autoRunning = false;
+
+function getCliquables() {
+    // Retourne la liste des pièces cliquables à ce moment
+    let lesPieces = document.getElementsByClassName("piece");
+    let cliquables = [];
+    stylePieceInvisible = getComputedStyle(pieceInvisible);
+    for (let i = 0; i < lesPieces.length; i++) {
+        let sonStyle = getComputedStyle(lesPieces[i]);
+        if (pieceCliquable(stylePieceInvisible.order, sonStyle.order)) {
+            cliquables.push(lesPieces[i]);
+        }
+    }
+    return cliquables;
+}
+
+function autoPlay() {
+    let cliquables = getCliquables();
+    if (cliquables.length === 0) return;
+    // Choisir une pièce au hasard parmi les cliquables
+    let piece = cliquables[Math.floor(Math.random() * cliquables.length)];
+    piece.click();
+}
+
+function toggleAuto() {
+    let btn = document.getElementById("autoButton");
+    if (autoRunning) {
+        clearInterval(autoInterval);
+        autoInterval = null;
+        autoRunning = false;
+        btn.textContent = "Auto";
+        btn.classList.remove("auto-on");
+    } else {
+        autoRunning = true;
+        btn.textContent = "Stop";
+        btn.classList.add("auto-on");
+        autoInterval = setInterval(autoPlay, 2000);
+    }
+}
+
+// Arrêter l'auto si le jeu est résolu
+const _endOfGame = endOfGame;
+endOfGame = function() {
+    if (autoRunning) toggleAuto();
+    _endOfGame();
 }
