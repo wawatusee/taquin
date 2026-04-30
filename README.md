@@ -1,44 +1,44 @@
-# taquin
+# crud_galerie-php-css-js
+Gallery with small crud with html css js json for the data files
+## Done
+ - add an image on a directory from user terminal
+ - display thumbs images(flex wrap)
+ - on click thumb use of a zoombox to display big image
+ - add a checkbox to use it as a selector backend
+ - use the ratio of the background image to fill the taquin with a non square image
+ - Use video to fill the taquin(just have use a GIF, thats perfect)
+  - make an event at the issue of the taquin
+   - delete a thumb an the linked big image
+   - Create an help with a zoomBox wich show the image of the 15n puzzle
+   - Create an help service wich show the original number of each case
+   - on change the default image, go to the public page directly
+   - less corner for each piece of the taquin
+   - Change the background to grey
+   - change the number of pieces 
+   - make a taquin with only 9 pieces
+  - build the taquin in JS instead of hard html
+## To do
+
+For Raymond
+
+ - access to the admin with a password
+
+ The other are for this site and the fork origin to
+ 
+ - rule errors: admin,on upload, rule imagesize error; if the default image(json)doesn't exist; if an image extension is jpeg and not jpg.
+ - modify the name of a thumb and the big image linked to it
 
 
-## Taquin de raymond-version html-js-css
+ ## Parameters image taquin and explain
+ The aspect of each piece come from the backround image of his div, the url of that imagage come from a file json("image-taquin.json") with the property "image_taquin";
+  Read by php in index php:" $jsonImageTaquin=json_decode(file_get_contents("js/image-taquin.json"));
+                //Récupération du nom de l'image source
+                $nomImage=$jsonImageTaquin->image_taquin;
+                $urlImage=$dirImages.$nomImage;"
 
+And transformed in variable css in a style tag : "<style>:root{--image-taquin:url('<?php echo "../".$urlImage ?>');</style>"
+At end the real impact is in CSS with the use of this variable for the background of each piece:
+".piece {background: var(--image-taquin);"
 
-Commande de Raymond :
-
-### taquin jouable.
-
-Le taquin est une figure divisée en 16 morceaux de dimensions similaires(en hauteur et en largeur).  
-Les 16 morceaux sont disposés sur une grille de 16 emplacements adjacents(4 colonnes, 4 rangées).  
-Le 16eme morceau est invisible.  
-Si un des 15 morceaux visibles est voisin du morceau invisible, il devient cliquable. Au clic sur un morceau visible, il échange sa place avec le morceau invisible.  
-
-## Comment qu'on fait
-
-### Structure  
-
-Les 16 div sont contenues par une boite flex. La largeur de la dite boite Flex correspond à 4 fois la largeur de chaque morceau. 
-Nous attribuons un comportement wrap à cette boite: La mise en tableau des pièces dépend de ce comportement.  
-Une propriété order pour chaque pièce du taquin lui donne sa position dans le tableau.
-L'image n'a pa été découpée en 16 morceaux au préalable, une seule image est employée et est ensuite utilisée comme background de chaque case pour simuler des morceaux différents.
-Une autre version de ce Taquin reproduira le même fonctionnement avec une vidéo.
-Le Javascript est employé pour gérer le CSS existant, permettre l'écoute des actions du joueur et y réagir.
-#### Structure du site, 
-simple: 
-
-- Un Header qui reprend le nom de domaine.
-- Un Nav latéral avec la galerie d'images/video cliquables.
-- 3 pages composeront le site
-- -Une page galerie, avec toutes les images représentant les taquins potentiel, qui ménera à:
-- Une page Taquin contenant un Main centré, qui sera le contenant du composant "Taquin jouable".
-- Une page à propos ou ReadMe
-- Un footer reprenant les références minimum(générique, conditions générales, liens externes, réseaux sociaux potentiels).
-
-### Esthétique, 
-- Footer, header, 
-- aplats unis communs, 
-- font : sans-serif brute, sobre, blanc grand pour  h1 header et pour le footer petite taille, peu de strong, noir. 
-- Composant, fond gris clair, adoucir le biseau de chaque pièce.
-
-
-
+May be I could do everything in JS but I like the mixed CSS/JS to, thats make the reread easier.
+ 
