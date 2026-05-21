@@ -70,17 +70,24 @@ function getShuffleArray() {
 
 function isSolvable(arr) {
     let n = nbrPiecesPerLine * nbrPiecesPerLine;
+    // arr[i] = ordre flex de la pièce i (i = position DOM, valeur = position visuelle)
+    // On reconstitue le tableau visuel : visualArr[position visuelle - 1] = numéro de pièce (i+1)
+    let visualArr = new Array(n);
+    for (let i = 0; i < n; i++) {
+        visualArr[arr[i] - 1] = i + 1;
+    }
+
+    let blankVisualPos = visualArr.indexOf(n); // position visuelle de la case vide
     let inversions = 0;
-    for (let i = 0; i < arr.length - 1; i++) {
-        if (arr[i] === n) continue; // ignorer la pièce invisible
-        for (let j = i + 1; j < arr.length; j++) {
-            if (arr[j] === n) continue; // ignorer la pièce invisible
-            if (arr[i] > arr[j]) inversions++;
+    for (let i = 0; i < n - 1; i++) {
+        if (visualArr[i] === n) continue;
+        for (let j = i + 1; j < n; j++) {
+            if (visualArr[j] === n) continue;
+            if (visualArr[i] > visualArr[j]) inversions++;
         }
     }
-    let blankPos = arr.indexOf(n);
-    let blankRow = Math.floor(blankPos / nbrPiecesPerLine);
-    let blankRowFromBottom = nbrPiecesPerLine - blankRow;
+
+    let blankRowFromBottom = nbrPiecesPerLine - Math.floor(blankVisualPos / nbrPiecesPerLine);
 
     if (nbrPiecesPerLine % 2 === 1) {
         return inversions % 2 === 0;
