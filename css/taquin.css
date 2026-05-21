@@ -171,3 +171,8 @@ footer {
     border-top: 5px solid var(--couleurTitresMuted);
     pointer-events: none;
 }
+.ctrl-btn.auto-on {
+    background: var(--couleurTitres);
+    color: white;
+    border-color: var(--couleurTitres);
+}

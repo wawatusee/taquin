@@ -1,8 +1,9 @@
-document.body.onload = setBoard;
 let nbrPiecesPerLine = 0
 let pieceInvisible = null
 let stylePieceInvisible = null
 let displayedNumero = false
+
+document.body.onload = setBoard
 
 function setBoard(){
     nbrPiecesPerLine = Number(getComputedStyle(document.documentElement).getPropertyValue('--nbrPiecesPerLine'));
@@ -56,8 +57,11 @@ function getShuffleArray() {
     }
 
     // Correction de parité si nécessaire
+    // On permute deux pièces qui ne sont pas la pièce invisible (valeur n)
     if (!isSolvable(arr)) {
-        [arr[0], arr[1]] = [arr[1], arr[0]];
+        let swapA = arr[0] === n ? 1 : 0;
+        let swapB = arr[1] === n ? 2 : 1;
+        [arr[swapA], arr[swapB]] = [arr[swapB], arr[swapA]];
     }
 
     return arr;
@@ -155,4 +159,75 @@ function endOfGame(){
         let chaquePiece = lesPieces[i];
         chaquePiece.removeEventListener("click", joue);
     };
+    // Afficher le bouton de partage
+    document.getElementById("shareButton").style.display = "flex";
+}
+
+function shareGame(){
+    const url = `${location.origin}${location.pathname}?nbrPieces=${nbrPiecesTotal}&image=${encodeURIComponent(nomImage)}`;
+    const shareData = {
+        title: document.title,
+        text: "J'ai réussi ce taquin, à toi de jouer !",
+        url: url
+    };
+    // Web Share API sur mobile, clipboard en fallback
+    if(navigator.share && navigator.canShare && navigator.canShare(shareData)){
+        navigator.share(shareData).catch(() => {});
+    } else {
+        navigator.clipboard.writeText(url).then(() => {
+            const btn = document.getElementById("shareButton");
+            const original = btn.innerHTML;
+            btn.textContent = "Lien copié !";
+            setTimeout(() => { btn.innerHTML = original; }, 2000);
+        });
+    }
+}
+
+// MODE AUTO
+let autoInterval = null;
+let autoRunning = false;
+
+function getCliquables() {
+    // Retourne la liste des pièces cliquables à ce moment
+    let lesPieces = document.getElementsByClassName("piece");
+    let cliquables = [];
+    stylePieceInvisible = getComputedStyle(pieceInvisible);
+    for (let i = 0; i < lesPieces.length; i++) {
+        let sonStyle = getComputedStyle(lesPieces[i]);
+        if (pieceCliquable(stylePieceInvisible.order, sonStyle.order)) {
+            cliquables.push(lesPieces[i]);
+        }
+    }
+    return cliquables;
+}
+
+function autoPlay() {
+    let cliquables = getCliquables();
+    if (cliquables.length === 0) return;
+    // Choisir une pièce au hasard parmi les cliquables
+    let piece = cliquables[Math.floor(Math.random() * cliquables.length)];
+    piece.click();
+}
+
+function toggleAuto() {
+    let btn = document.getElementById("autoButton");
+    if (autoRunning) {
+        clearInterval(autoInterval);
+        autoInterval = null;
+        autoRunning = false;
+        btn.textContent = "Auto";
+        btn.classList.remove("auto-on");
+    } else {
+        autoRunning = true;
+        btn.textContent = "Stop";
+        btn.classList.add("auto-on");
+        autoInterval = setInterval(autoPlay, 300);
+    }
+}
+
+// Arrêter l'auto si le jeu est résolu
+const _endOfGame = endOfGame;
+endOfGame = function() {
+    if (autoRunning) toggleAuto();
+    _endOfGame();
 }
