@@ -156,6 +156,28 @@ function endOfGame(){
         let chaquePiece = lesPieces[i];
         chaquePiece.removeEventListener("click", joue);
     };
+    // Afficher le bouton de partage
+    document.getElementById("shareButton").style.display = "flex";
+}
+
+function shareGame(){
+    const url = `${location.origin}${location.pathname}?nbrPieces=${nbrPiecesTotal}&image=${encodeURIComponent(nomImage)}`;
+    const shareData = {
+        title: document.title,
+        text: "J'ai réussi ce taquin, à toi de jouer !",
+        url: url
+    };
+    // Web Share API sur mobile, clipboard en fallback
+    if(navigator.share && navigator.canShare && navigator.canShare(shareData)){
+        navigator.share(shareData).catch(() => {});
+    } else {
+        navigator.clipboard.writeText(url).then(() => {
+            const btn = document.getElementById("shareButton");
+            const original = btn.innerHTML;
+            btn.textContent = "Lien copié !";
+            setTimeout(() => { btn.innerHTML = original; }, 2000);
+        });
+    }
 }
 
 // MODE AUTO
@@ -196,7 +218,7 @@ function toggleAuto() {
         autoRunning = true;
         btn.textContent = "Stop";
         btn.classList.add("auto-on");
-        autoInterval = setInterval(autoPlay, 2000);
+        autoInterval = setInterval(autoPlay, 300);
     }
 }
 

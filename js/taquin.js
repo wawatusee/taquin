@@ -57,8 +57,11 @@ function getShuffleArray() {
     }
 
     // Correction de parité si nécessaire
+    // On permute deux pièces qui ne sont pas la pièce invisible (valeur n)
     if (!isSolvable(arr)) {
-        [arr[0], arr[1]] = [arr[1], arr[0]];
+        let swapA = arr[0] === n ? 1 : 0;
+        let swapB = arr[1] === n ? 2 : 1;
+        [arr[swapA], arr[swapB]] = [arr[swapB], arr[swapA]];
     }
 
     return arr;
