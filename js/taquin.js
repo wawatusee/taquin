@@ -56,25 +56,29 @@ function getShuffleArray() {
         [arr[i], arr[j]] = [arr[j], arr[i]];
     }
 
-    // Correction de parité si nécessaire
-    // On permute deux pièces qui ne sont pas la pièce invisible (valeur n)
+    // Correction de parité — on permute les deux premières pièces qui ne sont pas la pièce invisible
     if (!isSolvable(arr)) {
-        let swapA = arr[0] === n ? 1 : 0;
-        let swapB = arr[1] === n ? 2 : 1;
-        [arr[swapA], arr[swapB]] = [arr[swapB], arr[swapA]];
+        let candidates = [];
+        for (let i = 0; i < arr.length && candidates.length < 2; i++) {
+            if (arr[i] !== n) candidates.push(i);
+        }
+        [arr[candidates[0]], arr[candidates[1]]] = [arr[candidates[1]], arr[candidates[0]]];
     }
 
     return arr;
 }
 
 function isSolvable(arr) {
+    let n = nbrPiecesPerLine * nbrPiecesPerLine;
     let inversions = 0;
     for (let i = 0; i < arr.length - 1; i++) {
+        if (arr[i] === n) continue; // ignorer la pièce invisible
         for (let j = i + 1; j < arr.length; j++) {
+            if (arr[j] === n) continue; // ignorer la pièce invisible
             if (arr[i] > arr[j]) inversions++;
         }
     }
-    let blankPos = arr.indexOf(nbrPiecesPerLine * nbrPiecesPerLine);
+    let blankPos = arr.indexOf(n);
     let blankRow = Math.floor(blankPos / nbrPiecesPerLine);
     let blankRowFromBottom = nbrPiecesPerLine - blankRow;
 
@@ -153,6 +157,8 @@ function displayPiecesNumber(){
 }
 
 function endOfGame(){
+    // Arrêter le mode auto si actif
+    if (autoRunning) toggleAuto();
     let lesPieces = document.getElementsByClassName("piece");
     document.getElementById("pieceInvisible").style.visibility = "visible";
     for (let i = 0; i < lesPieces.length; i++) {
@@ -225,9 +231,4 @@ function toggleAuto() {
     }
 }
 
-// Arrêter l'auto si le jeu est résolu
-const _endOfGame = endOfGame;
-endOfGame = function() {
-    if (autoRunning) toggleAuto();
-    _endOfGame();
-}
+
