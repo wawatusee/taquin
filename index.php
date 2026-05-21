@@ -1,7 +1,20 @@
 <?php 
 require_once "config.php";
 $jsonImageTaquin=json_decode(file_get_contents("js/image-taquin.json"));
-$nomImage=$jsonImageTaquin->image_taquin;
+
+// Image : GET prime sur le json, avec validation stricte
+if(isset($_GET["image"])){
+    $imageCandidate = basename($_GET["image"]); // basename() empêche toute traversée de répertoire
+    // On vérifie que le fichier existe réellement dans le dossier images
+    if(file_exists($dirImages.$imageCandidate)){
+        $nomImage = $imageCandidate;
+    } else {
+        $nomImage = $jsonImageTaquin->image_taquin; // fallback si fichier inconnu
+    }
+} else {
+    $nomImage = $jsonImageTaquin->image_taquin;
+}
+
 $urlImage=$dirImages.$nomImage;
 if (isset($_GET["nbrPieces"])){
     $nbrPiecesPerLine=sqrt($_GET["nbrPieces"]);
@@ -32,6 +45,10 @@ $largeurPiece=round($sizeTaquin/$nbrPiecesPerLine);
         --ratioImage: <?php echo $ratioImage ?>;
         --nbrPiecesPerLine: <?php echo $nbrPiecesPerLine ?>
     }</style>
+    <script>
+        const nomImage = "<?php echo addslashes($nomImage); ?>";
+        const nbrPiecesTotal = <?php echo (int)($nbrPiecesPerLine * $nbrPiecesPerLine); ?>;
+    </script>
 </head>
 <body>
     <div class="c1">
@@ -62,6 +79,12 @@ $largeurPiece=round($sizeTaquin/$nbrPiecesPerLine);
                 </a>
                 <button class="ctrl-btn" id="numeroButton" onclick="displayPiecesNumber();" title="Afficher les numéros">1</button>
                 <button class="ctrl-btn" id="autoButton" onclick="toggleAuto();" title="Mode automatique">Auto</button>
+                <button class="ctrl-btn" id="shareButton" onclick="shareGame();" title="Partager ce taquin" style="display:none">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <circle cx="12" cy="3" r="1.5"/><circle cx="12" cy="13" r="1.5"/><circle cx="3" cy="8" r="1.5"/>
+                        <line x1="10.5" y1="3.75" x2="4.5" y2="7.25"/><line x1="10.5" y1="12.25" x2="4.5" y2="8.75"/>
+                    </svg>
+                </button>
 
                 <div class="ctrl-spacer"></div>
                 <div class="ctrl-separator"></div>
