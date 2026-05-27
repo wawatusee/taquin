@@ -48,49 +48,55 @@ function taquin() {
 
 function getShuffleArray() {
     let n = nbrPiecesPerLine * nbrPiecesPerLine;
+    let arr;
+    let maxAttempts = 100; // Évite une boucle infinie (au cas où)
+    let attempts = 0;
     
-    // 1. Au départ, l'ordre CSS correspond exactement à la position des pièces (1, 2, 3...)
-    // arr[0] est la pièce 1, avec un style.order = 1, etc.
-    let arr = Array.from({length: n}, (_, i) => i + 1);
-    
-    // La pièce invisible est TOUJOURS la dernière du DOM (index n - 1)
-    let blankDOMIndex = n - 1; 
-    
-    // On va suivre la valeur CSS 'order' actuelle de cette pièce invisible
-    // Au départ, son ordre visuel est égal à sa position (n)
-    let blankCurrentOrder = n; 
-
-    // 2. On simule des mélanges (ex: 100 mouvements)
-    let moves = 100; 
-    for (let m = 0; m < moves; m++) {
-        let possibleOrdersToSwap = [];
+    do {
+        // Créer un tableau [1, 2, 3, ..., n]
+        arr = Array.from({length: n}, (_, i) => i + 1);
         
-        // On calcule la position de la case vide sur la grille VISUELLE (grâce à son .order)
-        let visualPos = blankCurrentOrder - 1;
-        let row = Math.floor(visualPos / nbrPiecesPerLine);
-        let col = visualPos % nbrPiecesPerLine;
-        
-        // On identifie les positions visuelles voisines (Haut, Bas, Gauche, Droite)
-        if (row > 0) possibleOrdersToSwap.push(blankCurrentOrder - nbrPiecesPerLine);
-        if (row < nbrPiecesPerLine - 1) possibleOrdersToSwap.push(blankCurrentOrder + nbrPiecesPerLine);
-        if (col > 0) possibleOrdersToSwap.push(blankCurrentOrder - 1);
-        if (col < nbrPiecesPerLine - 1) possibleOrdersToSwap.push(blankCurrentOrder + 1);
-        
-        // On choisit une valeur d'order voisine au hasard
-        let targetOrder = possibleOrdersToSwap[Math.floor(Math.random() * possibleOrdersToSwap.length)];
-        
-        // On cherche quelle pièce (dans le DOM) possède actuellement cet 'order' cible
-        let targetDOMIndex = arr.indexOf(targetOrder);
-        
-        // On inverse les valeurs d'order dans notre tableau
-        arr[blankDOMIndex] = targetOrder;
-        arr[targetDOMIndex] = blankCurrentOrder;
-        
-        // La case vide a maintenant pris la valeur d'order de sa cible
-        blankCurrentOrder = targetOrder;
-    }
+        // Mélange Fisher-Yates
+        for (let i = n - 1; i > 0; i--) {
+            let j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+        attempts++;
+        if (attempts > maxAttempts) {
+            console.warn("Pas trouvé de configuration solvable après 100 essais");
+            break;
+        }
+    } while (!isSolvable(arr));
     
     return arr;
+}
+
+function isSolvable(arr) {
+    let n = nbrPiecesPerLine * nbrPiecesPerLine;
+    // arr[i] = ordre flex de la pièce i (i = position DOM, valeur = position visuelle)
+    // On reconstitue le tableau visuel : visualArr[position visuelle - 1] = numéro de pièce (i+1)
+    let visualArr = new Array(n);
+    for (let i = 0; i < n; i++) {
+        visualArr[arr[i] - 1] = i + 1;
+    }
+
+    let blankVisualPos = visualArr.indexOf(n); // position visuelle de la case vide
+    let inversions = 0;
+    for (let i = 0; i < n - 1; i++) {
+        if (visualArr[i] === n) continue;
+        for (let j = i + 1; j < n; j++) {
+            if (visualArr[j] === n) continue;
+            if (visualArr[i] > visualArr[j]) inversions++;
+        }
+    }
+
+    let blankRowFromBottom = nbrPiecesPerLine - Math.floor(blankVisualPos / nbrPiecesPerLine);
+
+    if (nbrPiecesPerLine % 2 === 1) {
+        return inversions % 2 === 0;
+    } else {
+        return (inversions + blankRowFromBottom) % 2 === 0;
+    }
 }
 
 function joue(evt) {
