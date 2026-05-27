@@ -176,3 +176,22 @@ footer {
     color: white;
     border-color: var(--couleurTitres);
 }
+/* Option 1 : Un effet de "pulsation" lumineuse (très élégant) */
+.piece.en-lecture {
+    box-shadow: inset 0 0 20px 5px rgba(255, 255, 255, 0.8);
+    filter: brightness(1.3);
+    transform: scale(0.98); /* Légère pression vers l'enfoncement */
+    transition: all 0.1s ease;
+}
+
+/* Option 2 : Un filtre de couleur (si ton image de fond est sobre) */
+.piece.en-lecture {
+    filter: sepia(1) hue-rotate(90deg) saturate(2); /* Donne un aspect vert fluo */
+}
+
+/* Option 3 : Une simple bordure lumineuse */
+.piece.en-lecture {
+    outline: 3px solid #00ffcc;
+    outline-offset: -3px;
+    z-index: 10; /* Pour passer au-dessus des autres bordures */
+}

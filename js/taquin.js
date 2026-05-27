@@ -2,7 +2,7 @@ let nbrPiecesPerLine = 0
 let pieceInvisible = null
 let stylePieceInvisible = null
 let displayedNumero = false
-
+let activeTimeouts = [];
 // Variables globales pour l'audio
 let audioCtx = null;
 let audioBuffer = null;
@@ -21,7 +21,7 @@ async function loadAudio(url) {
         // On calcule la durée d'un segment de son
         let numberOfPieces = nbrPiecesPerLine * nbrPiecesPerLine;
         segmentDuration = audioBuffer.duration / numberOfPieces;
-        
+
         console.log("Audio chargé avec succès ! Durée d'un segment :", segmentDuration, "s");
     } catch (e) {
         console.error("Impossible de charger le fichier audio :", e);
@@ -30,7 +30,7 @@ async function loadAudio(url) {
 
 function setBoard() {
     nbrPiecesPerLine = Number(getComputedStyle(document.documentElement).getPropertyValue('--nbrPiecesPerLine'));
-    
+
     // 2. On LANCE le chargement du son ici (remplace 'chemin/vers/ton/son.mp3')
     loadAudio('sons/ad1.mp3');
 
@@ -38,7 +38,7 @@ function setBoard() {
     let scene = document.getElementById("scene")
     let board = document.createElement("div")
     board.classList.add("taquin")
-    
+
     for (let i = 1; i < numberOfPieces + 1; i++) {
         let piece = document.createElement("div");
         piece.classList.add("piece")
@@ -47,7 +47,7 @@ function setBoard() {
     scene.appendChild(board)
     pieceInvisible = board.lastChild
     pieceInvisible.id = "pieceInvisible"
-    
+
     taquin();
 }
 
@@ -121,47 +121,64 @@ function getShuffleArray() {
 
     return arr;
 }
+
+
 function jouerSequenceAudioDepuis(orderClic) {
-    // Interrompre une éventuelle lecture en cours si l'utilisateur clique vite
-    audioCtx.close();
+    // 1. ARRÊT DU SON EN COURS
+    if (audioCtx) {
+        audioCtx.close();
+    }
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
     let lesPieces = Array.from(document.getElementsByClassName("piece"));
-
-    // On trie les pièces du DOM selon leur ordre VISUEL actuel (1, 2, 3...)
     lesPieces.sort((a, b) => Number(a.style.order) - Number(b.style.order));
+
+    // 2. RESET DES LUMIÈRES & DES MINUTEURS PRÉCÉDENTS
+    // On annule tous les setTimeout qui attendaient leur tour
+    activeTimeouts.forEach(timeoutId => clearTimeout(timeoutId));
+    activeTimeouts = []; // On vide le tableau
+
+    // On éteint de force toutes les pièces actuellement allumées
+    lesPieces.forEach(p => p.classList.remove("en-lecture"));
 
     let tempsEcoule = 0;
 
-    // On parcourt les pièces visuelles
     for (let i = 0; i < lesPieces.length; i++) {
         let piece = lesPieces[i];
         let currentOrder = Number(piece.style.order);
 
-        // "A partir de la pièce cliquée" : on ignore celles qui sont visuellement avant
         if (currentOrder < orderClic) continue;
 
-        // Quelle partie du son cette pièce possède-t-elle à l'origine ?
-        // L'image de la pièce dépend de son index dans le DOM (sa création initiale)
         let domIndex = Array.from(piece.parentNode.children).indexOf(piece);
         let startTimeDuSegment = domIndex * segmentDuration;
 
-        // Si c'est la case invisible, on peut décider de jouer du "silence"
+        // La pièce invisible est sourde : on passe au segment suivant en restant muet
         if (piece.id === "pieceInvisible") {
-            tempsEcoule += segmentDuration; // On avance le chrono sans lancer de son
+            tempsEcoule += segmentDuration;
             continue;
         }
 
-        // Création d'un lecteur de note/segment éphémère
         let source = audioCtx.createBufferSource();
         source.buffer = audioBuffer;
         source.connect(audioCtx.destination);
 
-        // Planification millimétrée dans le temps :
-        // On lui dit : "Joue TA portion de son, au moment 'tempsEcoule', pendant 'segmentDuration'"
         source.start(audioCtx.currentTime + tempsEcoule, startTimeDuSegment, segmentDuration);
 
-        // On décale le pointeur pour le segment de la pièce suivante
+        let debutEffet = tempsEcoule * 1000;
+        let finEffet = (tempsEcoule + segmentDuration) * 1000;
+
+        // Étape A : Allumer la pièce
+        let idAllumage = setTimeout(() => {
+            piece.classList.add("en-lecture");
+        }, debutEffet);
+        activeTimeouts.push(idAllumage); // On enregistre le minuteur
+
+        // Étape B : Éteindre la pièce
+        let idExtinction = setTimeout(() => {
+            piece.classList.remove("en-lecture");
+        }, finEffet);
+        activeTimeouts.push(idExtinction); // On enregistre le minuteur
+
         tempsEcoule += segmentDuration;
     }
 }
