@@ -3,15 +3,43 @@ let pieceInvisible = null
 let stylePieceInvisible = null
 let displayedNumero = false
 
+// Variables globales pour l'audio
+let audioCtx = null;
+let audioBuffer = null;
+let segmentDuration = 0;
+
 document.body.onload = setBoard
 
-function setBoard(){
+// 1. Déclarer loadAudio à l'extérieur (plus propre et réutilisable)
+async function loadAudio(url) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    try {
+        const response = await fetch(url);
+        const arrayBuffer = await response.arrayBuffer();
+        audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+
+        // On calcule la durée d'un segment de son
+        let numberOfPieces = nbrPiecesPerLine * nbrPiecesPerLine;
+        segmentDuration = audioBuffer.duration / numberOfPieces;
+        
+        console.log("Audio chargé avec succès ! Durée d'un segment :", segmentDuration, "s");
+    } catch (e) {
+        console.error("Impossible de charger le fichier audio :", e);
+    }
+}
+
+function setBoard() {
     nbrPiecesPerLine = Number(getComputedStyle(document.documentElement).getPropertyValue('--nbrPiecesPerLine'));
+    
+    // 2. On LANCE le chargement du son ici (remplace 'chemin/vers/ton/son.mp3')
+    loadAudio('sons/ad1.mp3');
+
     let numberOfPieces = nbrPiecesPerLine * nbrPiecesPerLine
     let scene = document.getElementById("scene")
     let board = document.createElement("div")
     board.classList.add("taquin")
-    for (let i = 1; i < numberOfPieces + 1; i++){
+    
+    for (let i = 1; i < numberOfPieces + 1; i++) {
         let piece = document.createElement("div");
         piece.classList.add("piece")
         board.appendChild(piece)
@@ -19,6 +47,7 @@ function setBoard(){
     scene.appendChild(board)
     pieceInvisible = board.lastChild
     pieceInvisible.id = "pieceInvisible"
+    
     taquin();
 }
 
@@ -48,62 +77,113 @@ function taquin() {
 
 function getShuffleArray() {
     let n = nbrPiecesPerLine * nbrPiecesPerLine;
-    
+
     // 1. Au départ, l'ordre CSS correspond exactement à la position des pièces (1, 2, 3...)
     // arr[0] est la pièce 1, avec un style.order = 1, etc.
-    let arr = Array.from({length: n}, (_, i) => i + 1);
-    
+    let arr = Array.from({ length: n }, (_, i) => i + 1);
+
     // La pièce invisible est TOUJOURS la dernière du DOM (index n - 1)
-    let blankDOMIndex = n - 1; 
-    
+    let blankDOMIndex = n - 1;
+
     // On va suivre la valeur CSS 'order' actuelle de cette pièce invisible
     // Au départ, son ordre visuel est égal à sa position (n)
-    let blankCurrentOrder = n; 
+    let blankCurrentOrder = n;
 
     // 2. On simule des mélanges (ex: 100 mouvements)
-    let moves = 100; 
+    let moves = 100;
     for (let m = 0; m < moves; m++) {
         let possibleOrdersToSwap = [];
-        
+
         // On calcule la position de la case vide sur la grille VISUELLE (grâce à son .order)
         let visualPos = blankCurrentOrder - 1;
         let row = Math.floor(visualPos / nbrPiecesPerLine);
         let col = visualPos % nbrPiecesPerLine;
-        
+
         // On identifie les positions visuelles voisines (Haut, Bas, Gauche, Droite)
         if (row > 0) possibleOrdersToSwap.push(blankCurrentOrder - nbrPiecesPerLine);
         if (row < nbrPiecesPerLine - 1) possibleOrdersToSwap.push(blankCurrentOrder + nbrPiecesPerLine);
         if (col > 0) possibleOrdersToSwap.push(blankCurrentOrder - 1);
         if (col < nbrPiecesPerLine - 1) possibleOrdersToSwap.push(blankCurrentOrder + 1);
-        
+
         // On choisit une valeur d'order voisine au hasard
         let targetOrder = possibleOrdersToSwap[Math.floor(Math.random() * possibleOrdersToSwap.length)];
-        
+
         // On cherche quelle pièce (dans le DOM) possède actuellement cet 'order' cible
         let targetDOMIndex = arr.indexOf(targetOrder);
-        
+
         // On inverse les valeurs d'order dans notre tableau
         arr[blankDOMIndex] = targetOrder;
         arr[targetDOMIndex] = blankCurrentOrder;
-        
+
         // La case vide a maintenant pris la valeur d'order de sa cible
         blankCurrentOrder = targetOrder;
     }
-    
+
     return arr;
 }
+function jouerSequenceAudioDepuis(orderClic) {
+    // Interrompre une éventuelle lecture en cours si l'utilisateur clique vite
+    audioCtx.close();
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
 
+    let lesPieces = Array.from(document.getElementsByClassName("piece"));
+
+    // On trie les pièces du DOM selon leur ordre VISUEL actuel (1, 2, 3...)
+    lesPieces.sort((a, b) => Number(a.style.order) - Number(b.style.order));
+
+    let tempsEcoule = 0;
+
+    // On parcourt les pièces visuelles
+    for (let i = 0; i < lesPieces.length; i++) {
+        let piece = lesPieces[i];
+        let currentOrder = Number(piece.style.order);
+
+        // "A partir de la pièce cliquée" : on ignore celles qui sont visuellement avant
+        if (currentOrder < orderClic) continue;
+
+        // Quelle partie du son cette pièce possède-t-elle à l'origine ?
+        // L'image de la pièce dépend de son index dans le DOM (sa création initiale)
+        let domIndex = Array.from(piece.parentNode.children).indexOf(piece);
+        let startTimeDuSegment = domIndex * segmentDuration;
+
+        // Si c'est la case invisible, on peut décider de jouer du "silence"
+        if (piece.id === "pieceInvisible") {
+            tempsEcoule += segmentDuration; // On avance le chrono sans lancer de son
+            continue;
+        }
+
+        // Création d'un lecteur de note/segment éphémère
+        let source = audioCtx.createBufferSource();
+        source.buffer = audioBuffer;
+        source.connect(audioCtx.destination);
+
+        // Planification millimétrée dans le temps :
+        // On lui dit : "Joue TA portion de son, au moment 'tempsEcoule', pendant 'segmentDuration'"
+        source.start(audioCtx.currentTime + tempsEcoule, startTimeDuSegment, segmentDuration);
+
+        // On décale le pointeur pour le segment de la pièce suivante
+        tempsEcoule += segmentDuration;
+    }
+}
 function joue(evt) {
     let sonStyle = getComputedStyle(evt.target);
+
+    // 1. Logique de déplacement classique du Taquin
     if (pieceCliquable(stylePieceInvisible.order, sonStyle.order)) {
         let temporaryOrder = pieceInvisible.style.order;
         pieceInvisible.style.order = sonStyle.order;
         evt.target.style.order = temporaryOrder;
     }
+
+    // 2. Logique Audio : Jouer le son "dans l'ordre du désordre"
+    if (audioBuffer && audioCtx) {
+        jouerSequenceAudioDepuis(Number(sonStyle.order));
+    }
+
     if (testIssue()) {
         endOfGame();
-    };
-};
+    }
+}
 
 function pieceCliquable(pieceInvisible, pieceAtester, largueurTaquin = nbrPiecesPerLine) {
     pieceInvisible = Number(pieceInvisible);
@@ -127,32 +207,32 @@ function aGetPiecesOrder() {
     return orderArray
 };
 
-function testIssue(){
+function testIssue() {
     let nbrPiecesOrdonnees = 0;
     let lesPieces = document.getElementsByClassName("piece");
     let nbrPieces = lesPieces.length;
-    for (let i = 0; i < nbrPieces; i++){
+    for (let i = 0; i < nbrPieces; i++) {
         let chaquePiece = lesPieces[i];
         let sonStyle = getComputedStyle(chaquePiece);
-        if (sonStyle.order == i + 1){
+        if (sonStyle.order == i + 1) {
             nbrPiecesOrdonnees += 1;
         }
-        if (nbrPiecesOrdonnees > (nbrPiecesPerLine * nbrPiecesPerLine) - 2){
+        if (nbrPiecesOrdonnees > (nbrPiecesPerLine * nbrPiecesPerLine) - 2) {
             return true;
         }
     }
 }
 
-function displayPiecesNumber(){
+function displayPiecesNumber() {
     let pieces = document.getElementsByClassName("piece");
-    if (displayedNumero === false){
-        for (let i = 0; i < pieces.length; i++){
+    if (displayedNumero === false) {
+        for (let i = 0; i < pieces.length; i++) {
             let piece = pieces[i]
             piece.textContent = i + 1;
         }
         displayedNumero = true;
     } else {
-        for (let i = 0; i < pieces.length; i++){
+        for (let i = 0; i < pieces.length; i++) {
             let piece = pieces[i]
             piece.textContent = " ";
         }
@@ -160,7 +240,7 @@ function displayPiecesNumber(){
     }
 }
 
-function endOfGame(){
+function endOfGame() {
     // Arrêter le mode auto si actif
     if (autoRunning) toggleAuto();
     let lesPieces = document.getElementsByClassName("piece");
@@ -173,7 +253,7 @@ function endOfGame(){
     document.getElementById("shareButton").style.display = "flex";
 }
 
-function shareGame(){
+function shareGame() {
     const url = `${location.origin}${location.pathname}?nbrPieces=${nbrPiecesTotal}&image=${encodeURIComponent(nomImage)}`;
     const shareData = {
         title: document.title,
@@ -181,8 +261,8 @@ function shareGame(){
         url: url
     };
     // Web Share API sur mobile, clipboard en fallback
-    if(navigator.share && navigator.canShare && navigator.canShare(shareData)){
-        navigator.share(shareData).catch(() => {});
+    if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+        navigator.share(shareData).catch(() => { });
     } else {
         navigator.clipboard.writeText(url).then(() => {
             const btn = document.getElementById("shareButton");
